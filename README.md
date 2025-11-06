@@ -45,3 +45,5 @@ spring.flyway.enabled=false
 # 🌐 SERVER
 # ===============================
 server.port=8080
+
+##Test sur postman :http://localhost:8080/api/agencies
