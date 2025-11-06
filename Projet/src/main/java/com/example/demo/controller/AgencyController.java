@@ -1,40 +1,62 @@
 package com.example.demo.controller;
 
-import org.springframework.http.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+
+import com.example.demo.dto.AgencyInputRequest;
+import com.example.demo.dto.AgencyResponse;
 import com.example.demo.model.Agency;
 import com.example.demo.service.AgencyService;
-import java.util.*;
 
 @RestController
 @RequestMapping("/api/agencies")
+@RequiredArgsConstructor
 public class AgencyController {
 
-    private final AgencyService service;
+    private final AgencyService agencyService;
 
-    public AgencyController(AgencyService service) {
-        this.service = service;
+    @PostMapping("/create")
+    public AgencyResponse createAgency(@RequestBody AgencyInputRequest request) {
+        Agency agency = Agency.builder()
+                .nom(request.getNom())
+                .ville(request.getVille())
+                .description(request.getDescription())
+                .build();
+
+        Agency saved = agencyService.create(agency);
+
+        return AgencyResponse.builder()
+                .id(saved.getId())
+                .nom(saved.getNom())
+                .ville(saved.getVille())
+                .description(saved.getDescription())
+                .build();
     }
 
-    @PostMapping
-    public ResponseEntity<Agency> create(@RequestBody Agency agency) {
-        Agency saved = service.create(agency);
-        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    @DeleteMapping("/{id}/delete")
+    public void deleteAgency(@PathVariable Long id) {
+        agencyService.delete(id);
     }
 
-    @GetMapping
-    public List<Agency> list() {
-        return service.findAll();
+    @PutMapping("/{id}/update")
+    public Agency updateAgency(@PathVariable Long id, @RequestBody Agency agency) {
+        agency.setId(id);
+        return agencyService.create(agency);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Agency> get(@PathVariable Long id) {
-        return service.findById(id).map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    public Agency findAgency(@PathVariable Long id) {
+        return agencyService.findById(id).orElse(null);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
+    @GetMapping
+    public List<Agency> findAllAgencies() {
+        return agencyService.findAll();
+    }
+
+    @GetMapping("/by-name")
+    public List<Agency> findByNom(@RequestParam String nom) {
+        return agencyService.findByNom(nom);
     }
 }

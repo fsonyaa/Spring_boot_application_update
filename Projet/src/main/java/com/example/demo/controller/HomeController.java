@@ -8,6 +8,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String home() {
-        return "✅ Application Spring Boot en marche ! Utilise /api/agencies pour tester l’API.";
+        return "✅ Application Spring Boot en marche ! Utilise /api/agencies pour tester l'API.";
     }
 }

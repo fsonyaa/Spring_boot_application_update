@@ -1,25 +1,21 @@
 package com.example.demo.service;
 
-import org.springframework.stereotype.Service;
-import com.example.demo.repository.AgencyRepository;
 import com.example.demo.model.Agency;
-import java.util.*;
+import com.example.demo.repository.AgencyRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AgencyService {
 
     private final AgencyRepository repository;
 
-    public AgencyService(AgencyRepository repository) {
-        this.repository = repository;
-    }
-
-    public Agency create(Agency a) {
-        // si condition n'est pas null, assure la liaison bidirectionnelle
-        if (a.getCondition() != null) {
-            a.getCondition().setAgency(a);
-        }
-        return repository.save(a);
+    public Agency create(Agency agency) {
+        return repository.save(agency);
     }
 
     public List<Agency> findAll() {
@@ -28,6 +24,10 @@ public class AgencyService {
 
     public Optional<Agency> findById(Long id) {
         return repository.findById(id);
+    }
+
+    public List<Agency> findByNom(String nom) {
+        return repository.findByNom(nom);
     }
 
     public void delete(Long id) {
